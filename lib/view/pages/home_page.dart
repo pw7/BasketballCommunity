@@ -4,7 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/model/news.dart';
 import 'package:flutter_application/utils/toast.dart';
+import 'package:flutter_application/view/pages/basketball_article/article_list.dart';
+import 'package:flutter_application/view/pages/basketball_essay/essay_list_page.dart';
+import 'package:flutter_application/view/pages/basketball_highlights/highlights_page.dart';
 import 'package:flutter_application/view/pages/basketball_part_item.dart';
+import 'package:flutter_application/view/pages/basketball_video/video_page.dart';
 import 'package:flutter_application/view/pages/news/news_detail_page.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_easyrefresh/material_footer.dart';
@@ -23,9 +27,18 @@ class _HomePageState extends State<HomePage>
   int _preLoadingTime = 0;
   List<News> _newsdata = [];
   bool _cancelConnect = false; //多次请求
+  List<Widget> _pageList = List(); //列表存放页面
+
   @override
   void initState() {
     super.initState();
+    //初始化页面列表
+    _pageList
+      ..add(ArticleListPage())
+      ..add(VideoPage())
+      ..add(EssayListPage())
+      ..add(HighlightsPage());
+
     getDatas()
         .then((List<News> newsdata) {
           if (!_cancelConnect) {
@@ -124,7 +137,9 @@ class _HomePageState extends State<HomePage>
                           title: action.title,
                           color: action.color,
                           onTap: () {
-                            Toast.popToast('点击-->${action.title}');
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => _pageList[index]));
+                            //Toast.popToast('点击-->${action.title}');
                           });
                     },
                     childCount: actions.length,
@@ -265,7 +280,7 @@ class _HomePageState extends State<HomePage>
     ActionItem('深度好文', Color(0xFFEF5362)),
     ActionItem('球星教学', Color(0xFFFE6D4B)),
     ActionItem('篮球知识库', Color(0xFFFFCF47)),
-    ActionItem('线下活动', Color(0xFF9FD661)),
+    ActionItem('精彩集锦', Color(0xFF9FD661)),
   ];
 
   @override
